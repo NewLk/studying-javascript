@@ -1,5 +1,3 @@
-alert("This is alert");
-
 console.log('Hello World');
 
 var humans = "love";
