@@ -1,2 +1,2 @@
 # js_sandbox
-This will be my very first js app. Cheers!
+This is the folder where I keep all the things did and learned on the couerse Modern JavaScript From The Beginning by Brad Traversy.
