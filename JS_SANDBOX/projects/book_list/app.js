@@ -13,24 +13,25 @@ class UI {
 
   // Add book to list
   addBookToList(book) {
+    // Get book list
     const list = document.getElementById("book-list");
 
-    // Create tr element
+    // Create a row
     const row = document.createElement("tr");
 
-    // Insert cols
+    // Insert cols to the row
     row.innerHTML = `
       <td>${book.title}</td>
       <td>${book.author}</td>
       <td>${book.isbn}</td>
-      <td><a = href="#" class = "delete">X<a></td>
+      <td><a href="#" class = "delete">X</a></td>
     `;
 
+    // Append row to the list
     list.appendChild(row);
   }
 
   // Show alert
-
   showAlert(message, className) {
     // Create a div
     const div = document.createElement("div");
@@ -62,9 +63,16 @@ class UI {
     document.getElementById("author").value = "";
     document.getElementById("isbn").value = "";
   }
+
+  // Delete book from list
+  deleteBook(target) {
+    if (target.className === "delete") {
+      target.parentElement.parentElement.remove();
+    }
+  }
 }
 
-// Event Listeners
+// Event Listener for add book
 document.getElementById("book-form").addEventListener("submit", function (e) {
   // Get form values
   const title = document.getElementById("title").value,
@@ -79,14 +87,33 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
 
   // Validate the fields
   if (book.title === "" || book.author === "" || book.isbn === "") {
+    // Show error alert
     ui.showAlert("Please, fill in all fields", "error");
   } else {
     // Add book to list
     ui.addBookToList(book);
 
+    // Show success alert
+    ui.showAlert("Book Added!", "success");
+
     // Clear fields
     ui.clearFields();
   }
+
+  // The preventDefault() method cancels the event if it is cancelable, meaning that the default action that belongs to the event will not occur. For example, this can be useful when: Clicking on a "Submit" button, prevent it from submitting a form.
+  e.preventDefault();
+});
+
+// Event Listener for delete book
+document.getElementById("book-list").addEventListener("click", function (e) {
+  // Instantiate ui
+  const ui = new UI();
+
+  // Delete book from list
+  ui.deleteBook(e.target);
+
+  // Show success alert
+  ui.showAlert("Book Removed!", "success");
 
   e.preventDefault();
 });
