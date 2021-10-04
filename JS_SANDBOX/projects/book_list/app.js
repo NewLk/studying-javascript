@@ -1,4 +1,4 @@
-// Book Constructor
+// Book object
 class Book {
   constructor(title, author, isbn) {
     this.title = title;
@@ -7,7 +7,56 @@ class Book {
   }
 }
 
-// UI Constructor
+// Local storage (LS) class
+class Store {
+  // Get book list from the LS
+  static getBooks() {
+    let books;
+
+    if (localStorage.getItem("books") === null) {
+      books = [];
+    } else {
+      books = JSON.parse(localStorage.getItem("books"));
+    }
+
+    return books;
+  }
+
+  // Add a book to the local storage
+  static addBook(book) {
+    const books = Store.getBooks();
+
+    books.push(book);
+
+    localStorage.setItem("books", JSON.stringify(books));
+  }
+
+  // Display the list from the LS on the ui
+  static displayBooks() {
+    const books = Store.getBooks();
+
+    books.forEach(function (book) {
+      const ui = new UI();
+
+      ui.addBookToList(book);
+    });
+  }
+
+  // Remove a book from the local storage
+  static removeBook(isbn) {
+    const books = Store.getBooks();
+
+    books.forEach(function (book, index) {
+      if (book.isbn === isbn) {
+        books.splice(index, 1);
+      }
+    });
+
+    localStorage.setItem("books", JSON.stringify(books));
+  }
+}
+
+// UI class
 class UI {
   constructor() {}
 
@@ -72,6 +121,9 @@ class UI {
   }
 }
 
+// DOM load event
+document.addEventListener("DOMContentLoaded", Store.displayBooks);
+
 // Event Listener for add book
 document.getElementById("book-form").addEventListener("submit", function (e) {
   // Get form values
@@ -93,6 +145,9 @@ document.getElementById("book-form").addEventListener("submit", function (e) {
     // Add book to list
     ui.addBookToList(book);
 
+    // Add book to LS
+    Store.addBook(book);
+
     // Show success alert
     ui.showAlert("Book Added!", "success");
 
@@ -111,6 +166,9 @@ document.getElementById("book-list").addEventListener("click", function (e) {
 
   // Delete book from list
   ui.deleteBook(e.target);
+
+  // Remove from LS
+  Store.removeBook(e.target.parentElement.previousElementSibling.textContent);
 
   // Show success alert
   ui.showAlert("Book Removed!", "success");
